@@ -1,28 +1,24 @@
-//param keyVaultName string
 param containerRegistryName string
-param containerRegistryImageName string
-param containerRegistryImageVersion string = 'main-latest'
-param ServicePlanName string
-param webAppName string
-param location string = resourceGroup().location
-
+param location string 
+param appServicePlanName string
+param webAppName string ='marc-webapp'
+param containerRegistryImageName string = 'flask-demo'
+param containerRegistryImageVersion string = 'latest'
+@secure()
+param DOCKER_REGISTRY_SERVER_PASSWORD string
+param DOCKER_REGISTRY_SERVER_USERNAME string 
+param DOCKER_REGISTRY_SERVER_URL string  
 
 //param kevVaultSecretNameACRUsername string = 'acr-username'
 //param kevVaultSecretNameACRPassword1 string = 'acr-password1'
 //param kevVaultSecretNameACRPassword2 string = 'acr-password2'
-
-param DOCKER_REGISTRY_SERVER_USERNAME string
-param DOCKER_REGISTRY_SERVER_URL string
-@secure()
-param DOCKER_REGISTRY_SERVER_PASSWORD string
-
 
 //resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   //name: keyVaultName
 //}
 // Deploy Azure Container Registry
 
-module containerRegistry 'modules/container-registry/registry/main.bicep' = {
+module containerRegistry 'ResourceModules-main/modules/container-registry/registry/main.bicep' = {
   //dependsOn: [
     //keyvault
   //]
@@ -39,10 +35,10 @@ module containerRegistry 'modules/container-registry/registry/main.bicep' = {
   }
 }
 
-module serverfarm 'modules/web/serverfarm/main.bicep' = {
-  name: ServicePlanName
+module serverfarm 'ResourceModules-main/modules/web/serverfarm/main.bicep' = {
+  name: appServicePlanName
   params: {
-    name: ServicePlanName
+    name: appServicePlanName
     location: location
     sku: {
       capacity: 1
@@ -56,20 +52,15 @@ module serverfarm 'modules/web/serverfarm/main.bicep' = {
   }
 }
 
-module website 'modules/web/site/main.bicep' =  {
-  dependsOn: [
-    serverfarm
-    containerRegistry
-    //keyvault
-  ]
+module website 'ResourceModules-main/modules/web/site/main.bicep' =  {
   name: webAppName
   params: {
     name: webAppName
     location: location
     kind: 'app'
-    serverFarmResourceId: resourceId('Microsoft.Web/serverfarms', ServicePlanName)
+    serverFarmResourceId: serverfarm.outputs.resourceId
     siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:latest'
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${containerRegistryImageName }:${containerRegistryImageVersion}'
       appCommandLine: ''
     }
     appSettingsKeyValuePairs: {

@@ -18,20 +18,12 @@ jobs:
       with: 
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure Docker 
-      uses: azure/docker-login@v1
-      with:
-        login-server: asaurasieu.azurecr.io
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-    
-
     - name: Deploy Bicep App 
       run:
         az deployment group create \
           --resource-group aguadamillas_students_1 \
           --template-file ./main.bicep \
           --parameters @parameters.json \
-          --parameters DOCKER_REGISTRY_SERVER_URL=${{ vars.DOCKER_REGISTRY_SERVER_URL }} \
-          --parameters DOCKER_REGISTRY_SERVER_USERNAME=${{ vars.DOCKER_REGISTRY_SERVER_USERNAME }} \
+          --parameters DOCKER_REGISTRY_SERVER_URL=${{ secrets.DOCKER_REGISTRY_SERVER_URL }} \
+          --parameters DOCKER_REGISTRY_SERVER_USERNAME=${{ secrets.DOCKER_REGISTRY_SERVER_USERNAME }} \
           --parameters DOCKER_REGISTRY_SERVER_PASSWORD=${{ secrets.DOCKER_REGISTRY_SERVER_PASSWORD }}
