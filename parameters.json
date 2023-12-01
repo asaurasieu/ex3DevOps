@@ -4,11 +4,11 @@
     "parameters": {
 
         "containerRegistryName": {
-            "value": "asaurasieuacr"
+            "value": "asaurasacr"
         },
 
         "appServicePlanName": {
-            "value": "asaurasieu-appserviceplan"
+            "value": "asauras-appserviceplan"
         },
 
         "location": {
