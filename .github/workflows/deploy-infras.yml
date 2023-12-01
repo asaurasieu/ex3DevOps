@@ -18,6 +18,14 @@ jobs:
       with: 
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Azure Docker 
+      uses: azure/docker-login@v1
+      with:
+        login-server: <your-acr-login-server>.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+
     - name: Deploy Bicep App 
       run:
         az deployment group create \
