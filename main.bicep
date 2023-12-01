@@ -46,7 +46,6 @@ module serverfarm 'ResourceModules-main/modules/web/serverfarm/main.bicep' = {
       name: 'B1'
       size: 'B1'
       tier: 'Basic'
-      kind: 'Linux'
     }
     reserved: true
   }
