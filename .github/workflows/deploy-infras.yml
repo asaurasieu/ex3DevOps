@@ -21,7 +21,7 @@ jobs:
     - name: Azure Docker 
       uses: azure/docker-login@v1
       with:
-        login-server: <your-acr-login-server>.azurecr.io
+        login-server: asaurasieu.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
     
